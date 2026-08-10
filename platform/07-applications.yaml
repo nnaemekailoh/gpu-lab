@@ -1,0 +1,57 @@
+helmDefaults:
+  wait: true
+  waitForJobs: true
+  timeout: 2400
+  atomic: true
+  cleanupOnFail: true
+  createNamespace: true
+
+releases:
+  - name: vllm
+    chart: vllm/vllm-stack
+    version: 0.2.6
+    namespace: serving
+    missingFileHandler: Info
+    values:
+      - values/vllm.yaml
+    installed: true
+    labels:
+      stage: serving
+      app: vllm
+
+  - name: open-webui
+    chart: open-webui/open-webui
+    version: 5.4.0
+    namespace: serving
+    missingFileHandler: Info
+    values:
+      - values/open-webui.yaml
+    installed: true
+    labels:
+      stage: serving
+      app: open-webui
+
+  - name: langflow
+    chart: langflow/langflow-ide
+    version: 0.1.2
+    namespace: langflow
+    missingFileHandler: Info
+    values:
+      - values/langflow.yaml
+    installed: true
+    labels:
+      stage: serving
+      app: langflow
+
+  # Brings its own Postgres, ClickHouse, Redis and MinIO. Needs a third CPU node.
+  - name: langfuse
+    chart: langfuse/langfuse
+    version: 1.2.13
+    namespace: langfuse
+    missingFileHandler: Info
+    values:
+      - values/langfuse.yaml
+    installed: false
+    labels:
+      stage: tools
+      app: langfuse

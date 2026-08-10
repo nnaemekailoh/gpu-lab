@@ -1,0 +1,43 @@
+# langflow-ide: StatefulSet backend plus frontend Deployment. SQLite by default.
+# langflow-runtime is the chart for serving a finished flow as a service.
+
+langflow:
+  backend:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+    sqlite:
+      enabled: true
+      persistence:
+        enabled: true
+        size: 10Gi
+    env:
+      - name: LANGFLOW_LOG_LEVEL
+        value: INFO
+      # point components at the local endpoint instead of a hosted provider
+      - name: OPENAI_API_BASE
+        value: "http://vllm-router-service.serving.svc:80/v1"
+      - name: OPENAI_API_KEY
+        value: "not-required"
+
+  frontend:
+    enabled: true
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: langflow.local
+      paths:
+        - path: /
+          pathType: Prefix
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"

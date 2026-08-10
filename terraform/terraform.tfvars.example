@@ -1,0 +1,19 @@
+do_token       = ""
+ssh_public_key = ""
+
+# workstation IP
+admin_cidr = "0.0.0.0/0"
+
+region      = "tor1"
+k8s_version = "1.35.7-do.1"
+
+cpu_size  = "s-4vcpu-8gb"
+cpu_nodes = 2
+
+gpu_size  = "gpu-4000adax1-20gb"
+gpu_nodes = 1
+
+do_gpu_plugin = false
+
+bastion_size  = "s-1vcpu-1gb"
+bastion_image = "ubuntu-24-04-x64"

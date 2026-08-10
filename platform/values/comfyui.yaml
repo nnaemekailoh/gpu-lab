@@ -1,0 +1,37 @@
+# Needs a whole GPU. Either scale vLLM down first, or enable time-slicing in
+# values/nvidia-gpu-operator.yaml.
+
+image:
+  repository: ghcr.io/memenow/comfyui-helm
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8188
+
+resources:
+  limits:
+    nvidia.com/gpu: 1
+  requests:
+    cpu: "2"
+    memory: 8Gi
+
+persistence:
+  enabled: true
+  size: 100Gi
+  mountPath: /app/ComfyUI/models
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: comfyui.local
+      paths:
+        - path: /
+          pathType: Prefix
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+autoscaling:
+  enabled: false

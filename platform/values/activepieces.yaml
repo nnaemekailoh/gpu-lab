@@ -1,0 +1,30 @@
+# Core is MIT; the ee directories need a paid licence. Charts have defaulted to ee.
+env:
+  AP_EDITION: ce
+  AP_TELEMETRY_ENABLED: "false"
+
+service:
+  type: ClusterIP
+  port: 80
+  host: activepieces.local
+
+# SQLite loses flows on restart
+db:
+  type: SQLITE3
+
+queue:
+  mode: MEMORY
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: activepieces.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi

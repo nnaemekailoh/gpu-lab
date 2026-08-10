@@ -1,0 +1,28 @@
+server:
+  enabled: true
+  authModes:
+    - server
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - argo.local
+    paths:
+      - /
+
+controller:
+  workflowNamespaces:
+    - argo
+    - default
+  metricsConfig:
+    enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+workflow:
+  serviceAccount:
+    create: true
+  rbac:
+    create: true

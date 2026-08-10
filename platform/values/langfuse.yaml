@@ -1,0 +1,27 @@
+langfuse:
+  salt:
+    value: "change-me"
+  nextauth:
+    secret:
+      value: "change-me"
+
+postgresql:
+  deploy: true
+  auth:
+    password: "change-me"
+clickhouse:
+  deploy: true
+  replicaCount: 1
+redis:
+  deploy: true
+s3:
+  deploy: true
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: langfuse.local
+      paths:
+        - path: /
+          pathType: Prefix

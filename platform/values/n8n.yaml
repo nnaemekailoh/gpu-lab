@@ -1,0 +1,32 @@
+main:
+  persistence:
+    enabled: true
+    type: dynamic
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+worker:
+  enabled: false
+webhook:
+  enabled: false
+redis:
+  enabled: false
+
+config:
+  n8n:
+    # webhook URLs are generated from this
+    editor_base_url: ""
+
+secret: {}
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: n8n.local
+      paths:
+        - path: /
+          pathType: Prefix

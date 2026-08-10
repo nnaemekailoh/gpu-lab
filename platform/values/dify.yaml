@@ -1,0 +1,64 @@
+# Multi-tenant operation (one workspace = one tenant) requires a commercial licence
+# from Dify. Branding removal also requires permission. Community chart, not official.
+# Verify keys before applying: helm show values dify/dify --version 0.37.0
+
+global:
+  appApiUrl: ""
+  appWebUrl: ""
+  consoleApiUrl: ""
+  consoleWebUrl: ""
+  serviceApiUrl: ""
+  filesUrl: ""
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+  hosts:
+    - host: dify.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+api:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+
+worker:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+
+web:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+postgresql:
+  enabled: true
+  primary:
+    persistence:
+      enabled: true
+      size: 20Gi
+
+redis:
+  enabled: true
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+weaviate:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 50Gi

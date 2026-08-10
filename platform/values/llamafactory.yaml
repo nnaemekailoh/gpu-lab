@@ -1,0 +1,33 @@
+# Local chart: nothing is published for LLaMA Factory. Needs a whole GPU.
+
+image:
+  repository: hiyouga/llamafactory
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 7860
+
+resources:
+  limits:
+    nvidia.com/gpu: 1
+  requests:
+    cpu: "4"
+    memory: 32Gi
+
+persistence:
+  enabled: true
+  size: 200Gi
+  storageClass: ""
+  mountPath: /app/data
+
+hfTokenSecret: ""
+
+ingress:
+  enabled: true
+  className: nginx
+  host: llamafactory.local
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"

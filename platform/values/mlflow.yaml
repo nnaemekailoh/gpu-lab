@@ -1,0 +1,30 @@
+backendStore:
+  databaseMigration: false
+
+artifactRoot:
+  proxiedArtifactStorage: true
+
+persistence:
+  enabled: true
+  size: 20Gi
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: mlflow.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+auth:
+  enabled: false
