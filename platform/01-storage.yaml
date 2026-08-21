@@ -9,6 +9,9 @@ helmDefaults:
 
 # Longer timeout: Longhorn brings up a daemonset per node and waits on disk discovery.
 
+bases:
+  - repositories.yaml
+
 releases:
   - name: longhorn
     chart: longhorn/longhorn

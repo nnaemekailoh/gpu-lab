@@ -8,6 +8,9 @@ helmDefaults:
   createNamespace: true
 
 
+bases:
+  - repositories.yaml
+  
 releases:
   - name: cert-manager
     chart: jetstack/cert-manager

@@ -1,49 +1,35 @@
-# 16GB VRAM. Qwen2.5-3B bf16 is ~6.2GB, leaving room for KV cache.
-# 7B bf16 is ~15GB and will not leave enough.
-servingEngineSpec:
-  runtimeClassName: ""
-  modelSpec:
-    - name: "qwen"
-      repository: "vllm/vllm-openai"
-      tag: "v0.5.4"
-      modelURL: "Qwen/Qwen2.5-1.5B-Instruct"
-      replicaCount: 1
-
-      requestCPU: 4
-      requestMemory: "16Gi"
-      requestGPU: 1
-
-      pvcStorage: "50Gi"
-      pvcAccessMode:
-        - ReadWriteOnce
-
-      vllmConfig:
-        maxModelLen: 8192
-        dtype: "bfloat16"
-        extraArgs:
-          - "--gpu-memory-utilization"
-          - "0.90"
-          - "--otlp-traces-endpoint"
-          - "http://otel-collector-opentelemetry-collector.monitoring.svc:4317"
-
-      # required when requestGPU > 1
-      # shmSize: "8Gi"
-
-      # MoE models only. Balancedness is logged, not exported.
-      # extraArgs additions:
-      #   --enable-expert-parallel
-      #   --enable-eplb
-      #   --eplb-config '{"window_size":1000,"step_interval":3000,"num_redundant_experts":2,"log_balancedness":true}'
-
-  serviceMonitor:
-    enabled: true
+# values-stage1.yaml
 
 routerSpec:
-  serviceMonitor:
-    enabled: true
+  enableRouter: true
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      memory: "4Gi"          
+  startupProbe:
+    httpGet: {path: "/health", port: 8000}
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    failureThreshold: 30      
 
-kube-prometheus-stack:
-  enabled: false
-
-grafanaDashboards:
-  enabled: true
+servingEngineSpec:                  # defines the vLLM engine pods
+  enableEngine: true
+  runtimeClassName: ""              # nvidia container runtime; "" to disable
+  tolerations:
+    - key: "nvidia.com/gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
+  modelSpec:                        # a LIST - one entry per model deployment
+  - name: "opt125m"                 # k8s-safe short name, used in pod and service names
+    repository: "vllm/vllm-openai"  # official vLLM OpenAI server image
+    tag: "latest"                   # pin a real version in production
+    modelURL: "facebook/opt-125m"   # HF model id, or a local path (stage 2)
+    replicaCount: 1
+    requestCPU: 6
+    requestMemory: "16Gi"           # must hold the weights during load
+    requestGPU: 1                   # whole GPUs; fractional (0.5) works for tests
+    vllmConfig:
+      maxModelLen: 2048             # --max-model-len; context window
+      gpuMemoryUtilization: 0.6     # --gpu-memory-utilization; VRAM fraction for weights + KV

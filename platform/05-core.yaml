@@ -10,6 +10,9 @@ helmDefaults:
 
 # Core platform. Long timeout: several of these are slow first-install.
 
+bases:
+  - repositories.yaml
+  
 releases:
   - name: metallb
     chart: metallb/metallb

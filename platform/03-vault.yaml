@@ -11,6 +11,9 @@ helmDefaults:
 # Secret store before its consumers.
 # Vault needs initialising and unsealing after install. 
 
+bases:
+  - repositories.yaml
+  
 releases:
   - name: vault
     chart: hashicorp/vault

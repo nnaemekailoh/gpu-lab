@@ -6,10 +6,13 @@ helmDefaults:
   cleanupOnFail: true
   createNamespace: true
 
+bases:
+  - repositories.yaml
+  
 releases:
   - name: vllm
     chart: vllm/vllm-stack
-    version: 0.2.6
+    version: 0.1.12
     namespace: serving
     missingFileHandler: Info
     values:

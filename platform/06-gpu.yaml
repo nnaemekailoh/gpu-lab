@@ -9,6 +9,9 @@ helmDefaults:
 
 # GPU stage. 
 
+bases:
+  - repositories.yaml
+  
 releases:
   - name: nvidia-gpu-operator
     chart: nvidia/gpu-operator
